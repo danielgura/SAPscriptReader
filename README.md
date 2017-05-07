@@ -3,7 +3,7 @@ Web-based SAPscript reader
 
 # Features
 * Row highlighting
-* Command grouping: IF and CASE
+* Command grouping: `IF` and `CASE`
 * Window and language identification and selection
 * Separate listing of all used includes
 * Selection of two different modes: The `Strict` mode shows only important rows
