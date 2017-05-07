@@ -79,10 +79,11 @@
 	}
 
 	function highlight_row($name, $line, $row) {
-		global $includes, $mode;
+		global $includes, $mode, $tab_count;
 
 		$is_include = false;
 		$row = substr($row, 4); // ATTENTION: Update row
+		$tab = '';
 
 		if(substr($row, 0, 1) == '>') {
 			$css = array('color' => 'green', 'backgroundColor' => '');
@@ -117,10 +118,24 @@
 			$length = 2;
 		}
 
-		$row = '<span onclick="$(this).toggleClass(\'highlight\'); return false;" style="color:' . $css['color'] . '; background-color:' . $css['backgroundColor'] . '; white-space:nowrap;">' . $name . ' ' . sprintf("%04d", $line) . ' ' . htmlspecialchars(substr($row, 0, $length)) . '   ' . htmlspecialchars(substr($row, $length)) . '</span>' . PHP_EOL;
+		if(substr($row, $length, 5) == 'ENDIF'
+		|| substr($row, $length, 7) == 'ENDCASE') {
+			if(substr($row, 0, 2) != '/*') $tab_count--;
+		}
 
-		if($is_include == true) { $includes[] = $row; }
-		return $row;
+		for($t = 0; $t < $tab_count; $t++) {
+			$tab .= '&nbsp;&nbsp;&nbsp;';
+		}
+
+		if(substr($row, $length, 2) == 'IF'
+		|| substr($row, $length, 4) == 'CASE') {
+			if(substr($row, 0, 2) != '/*') $tab_count++;
+		}
+
+		$highlighted_row = '<span onclick="$(this).toggleClass(\'highlight\'); return false;" style="color:' . $css['color'] . '; background-color:' . $css['backgroundColor'] . '; white-space:nowrap;">' . $name . BLANK . sprintf("%04d", $line) . BLANK . htmlspecialchars(substr($row, 0, $length)) . BLANK . $tab . htmlspecialchars(substr($row, $length)) . '</span>' . PHP_EOL;
+
+		if($is_include == true) { $includes[] = $highlighted_row; }
+		return $highlighted_row;
 	}
 
 	//	####################################################################################
