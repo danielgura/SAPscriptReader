@@ -8,7 +8,7 @@ Web-based SAPscript reader
 * Separate listing of all used includes
 * Selection of two different modes: The `Strict` mode shows only important rows
 * Row marking by mouse clicking
-* Line numbers per Window
+* Line numbers per window
 
 # How to use the SAPscript Reader
 The SAPscript Reader expects files in `FOR` format. You can export and import every SAPscript form via the SAP program `RSTXSCRP`.
