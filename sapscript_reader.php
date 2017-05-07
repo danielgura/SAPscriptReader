@@ -83,15 +83,14 @@
 
 		$is_include = false;
 		$row = substr($row, 4); // ATTENTION: Update row
+		$buffer = '';
 		$tab = '';
 
 		if(substr($row, 0, 1) == '>') {
 			$css = array('color' => 'green', 'backgroundColor' => '');
-			$length = 1;
 			if($mode == 'strict') return;
 		} elseif(substr($row, 0, 1) == '*') {
 			$css = array('color' => 'blue', 'backgroundColor' => '');
-			$length = 1;
 		} elseif(substr($row, 0, 2) == '/:') {
 			if(strpos($row, 'INCLUDE')) {
 				$css = array('color' => 'white', 'backgroundColor' => 'brown');
@@ -99,27 +98,22 @@
 			} else {
 				$css = array('color' => 'red', 'backgroundColor' => '');
 			}
-			$length = 2;
 			if($mode == 'strict') return;
 		} elseif(substr($row, 0, 2) == '/*') {
 			$css = array('color' => 'green', 'backgroundColor' => '');
-			$length = 2;
 			if($mode == 'strict') return;
 		} elseif(substr($row, 0, 2) == '/E') {
 			$css = array('color' => 'black', 'backgroundColor' => 'yellow');
-			$length = 2;
 			if($mode == 'strict') return;
 		} elseif(substr($row, 0, 2) == '/W') {
 			$css = array('color' => 'white', 'backgroundColor' => 'blueviolet');
-			$length = 2;
 			if($mode == 'strict') return;
 		} else {
 			$css = array('color' => '', 'backgroundColor' => '');
-			$length = 2;
 		}
 
-		if(substr($row, $length, 5) == 'ENDIF'
-		|| substr($row, $length, 7) == 'ENDCASE') {
+		if(substr($row, 2, 5) == 'ENDIF'
+		|| substr($row, 2, 7) == 'ENDCASE') {
 			if(substr($row, 0, 2) != '/*') $tab_count--;
 		}
 
@@ -127,12 +121,32 @@
 			$tab .= '&nbsp;&nbsp;&nbsp;';
 		}
 
-		if(substr($row, $length, 2) == 'IF'
-		|| substr($row, $length, 4) == 'CASE') {
+		if(substr($row, 2, 2) == 'IF'
+		|| substr($row, 2, 4) == 'CASE') {
 			if(substr($row, 0, 2) != '/*') $tab_count++;
 		}
 
-		$highlighted_row = '<span onclick="$(this).toggleClass(\'highlight\'); return false;" style="color:' . $css['color'] . '; background-color:' . $css['backgroundColor'] . '; white-space:nowrap;">' . $name . BLANK . sprintf("%04d", $line) . BLANK . htmlspecialchars(substr($row, 0, $length)) . BLANK . $tab . htmlspecialchars(substr($row, $length)) . '</span>' . PHP_EOL;
+		if(substr($row, 0, 1) == BLANK) {
+			$length = 0;
+			$buffer = '&nbsp;&nbsp;'; }
+		elseif(substr($row, 1, 1) == BLANK) {
+			$length = 1;
+			$buffer = '&nbsp;'; }
+		else {
+			$length = 2; }
+
+		$highlighted_row = '<span onclick="$(this).toggleClass(\'highlight\'); return false;" style="color:' . $css['color'] . '; background-color:' . $css['backgroundColor'] . '; white-space:nowrap;">' .
+							$name .
+							BLANK .
+							sprintf("%04d", $line) .
+							BLANK .
+							htmlspecialchars(substr($row, 0, $length)) .
+							$buffer .
+							BLANK .
+							$tab .
+							htmlspecialchars(substr($row, 2)) .
+							'</span>' .
+							PHP_EOL;
 
 		if($is_include == true) { $includes[] = $highlighted_row; }
 		return $highlighted_row;
