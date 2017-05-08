@@ -124,7 +124,7 @@
 								BLANK .
 								sprintf("%04d", $line) .
 								BLANK .
-								str_replace(BLANK, '&nbsp;', substr($row, 0, 2)) .
+								str_replace(BLANK, '&nbsp;', htmlspecialchars(substr($row, 0, 2))) .
 								BLANK .
 								$tab .
 								htmlspecialchars(substr($row, 2)) .
